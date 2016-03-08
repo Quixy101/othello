@@ -22,6 +22,11 @@ Player::Player(Side side) {
 Player::~Player() {
 }
 
+void Player::setBoardData(char boardData[])
+{
+	this->myBoard.setBoard(boardData);
+}
+
 /*
  * Compute the next move given the opponent's last move. Your AI is
  * expected to keep track of the board on its own. If this is the first move,
@@ -52,7 +57,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 	//Move * bestMoveLevel2 = new Move(0,0);
 	bool moveFound = false;
 	int highestWorstScoreLevel2 = -64;
-	int worstScoreThisRound = -64;
+	int worstScoreThisRound = 64;
 	//Board boardClone;
 	if (isMovePossible)
 	{
@@ -94,7 +99,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 							}
 						}
 						highestWorstScoreLevel2 = worstScoreThisRound;
-						worstScoreThisRound= 0;
+						worstScoreThisRound= 64;
 						highestWorstScoreMoveLevel1->setX(i);
 						highestWorstScoreMoveLevel1->setY(j);
 					} 
@@ -132,7 +137,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 							highestWorstScoreMoveLevel1->setX(i);
 							highestWorstScoreMoveLevel1->setY(j);
 						}
-						worstScoreThisRound = 0;
+						worstScoreThisRound = 64;
 					}
 				}
 			}
