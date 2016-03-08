@@ -1,6 +1,9 @@
 #include "player.h"
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 31d3dad5220b170152cccf2b91c22ff31cba54c2
 // Sierra Lincoln othello project - no partner.
 
 /*
