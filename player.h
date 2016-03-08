@@ -7,6 +7,9 @@
 using namespace std;
 
 class Player {
+	Board myBoard;
+	enum Side mySide;
+	Move mostRecentMove;
 
 public:
     Player(Side side);

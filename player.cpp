@@ -1,5 +1,8 @@
 #include "player.h"
 
+
+// Sierra Lincoln othello project - no partner.
+
 /*
  * Constructor for the player; initialize everything here. The side your AI is
  * on (BLACK or WHITE) is passed in as "side". The constructor must finish 
@@ -14,6 +17,9 @@ Player::Player(Side side) {
      * precalculating things, etc.) However, remember that you will only have
      * 30 seconds.
      */
+	mySide = side;
+	Board myBoard();
+	//mostRecentMove (0,0);
 }
 
 /*
@@ -39,5 +45,37 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
      * TODO: Implement how moves your AI should play here. You should first
      * process the opponent's opponents move before calculating your own move
      */ 
+	if(this->mySide == WHITE) 
+	{
+		this->myBoard.doMove(opponentsMove, BLACK);
+	}
+	else
+	{
+		this->myBoard.doMove(opponentsMove, WHITE);
+	}
+	bool isMovePossible = this->myBoard.hasMoves(this->mySide);
+	bool isMoveMade = false;
+	if (isMovePossible)
+	{
+		for( int i = 0; i < 8; i++)
+		{
+			for (int j = 0; j <8; j++)
+			{
+				if( ! isMoveMade )
+				{
+					this->mostRecentMove.setX(i);
+					this->mostRecentMove.setY(j);
+					bool isThisMoveValid = this->myBoard.checkMove(& this->mostRecentMove, this->mySide);
+					if(isThisMoveValid)
+					{	
+						this->myBoard.doMove(& this->mostRecentMove, this->mySide);
+						isMoveMade = true;
+						return & this->mostRecentMove;
+					}
+				}
+			}
+		}
+	}
+	
     return NULL;
 }
