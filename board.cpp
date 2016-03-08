@@ -149,6 +149,21 @@ int Board::count(Side side) {
 }
 
 /*
+ * Returns the position score heuristic for the board
+ */
+int Board::getScore(Side mySide)
+{
+	if (mySide == BLACK)
+	{
+		return ( countBlack() - countWhite() );
+	}
+	else
+	{
+		return ( countWhite() - countBlack() );
+	}
+}
+
+/*
  * Current count of black stones.
  */
 int Board::countBlack() {
