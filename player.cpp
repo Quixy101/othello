@@ -68,7 +68,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 				bool isThisMoveValid = this->myBoard.checkMove(& this->mostRecentMove, this->mySide);
 				if(isThisMoveValid)
 				{	
-					std::cerr << "testing my move (" << i << ", " << j << ")" << std::endl;
+					//std::cerr << "testing my move (" << i << ", " << j << ")" << std::endl;
 					moveFound = true;
 					Board boardClone = * this->myBoard.copy();
 					boardClone.doMove(& this->mostRecentMove, this->mySide);
@@ -84,7 +84,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 							{
 								boardClone.doMove(possibleMoveLevel2, oppSide);
 								int thisScore = boardClone.getScore(this->mySide);
-								std::cerr << "testing their move (" << k << ", " << l << ") which gives score: " << thisScore << std::endl;
+								//std::cerr << "testing their move (" << k << ", " << l << ") which gives score: " << thisScore << std::endl;
 								if(worstScoreThisRound > thisScore)
 								{
 									worstScoreThisRound = thisScore;
