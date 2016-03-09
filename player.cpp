@@ -10,7 +10,7 @@
  */
 Player::Player(Side side) {
     // Will be set to true in test_minimax.cpp.
-    testingMinimax = false;
+    testingMinimax = true;
 	mySide = side;
 	Board myBoard();
 	//mostRecentMove (0,0);
@@ -70,76 +70,41 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 				bool isThisMoveValid = this->myBoard.checkMove(& this->mostRecentMove, this->mySide);
 				if(isThisMoveValid)
 				{	
-					if(moveFound == false)
+					moveFound = true;
+					Board boardClone = * this->myBoard.copy();
+					boardClone.doMove(& this->mostRecentMove, this->mySide);
+					//Go 1 layer deeper
+					for( int k = 0; k < 8; k++)
 					{
-						moveFound = true;
-						Board boardClone = * this->myBoard.copy();
-						boardClone.doMove(& this->mostRecentMove, this->mySide);
-
-						//Go 1 layer deeper
-						for( int k = 0; k < 8; k++)
+						for (int l = 0; l <8; l++)
 						{
-							for (int l = 0; l <8; l++)
+							possibleMoveLevel2->setX(k);
+							possibleMoveLevel2->setY(l);
+							bool isLevel2MoveValid = this->myBoard.checkMove(possibleMoveLevel2, oppSide);
+							if(isLevel2MoveValid)
 							{
-								possibleMoveLevel2->setX(k);
-								possibleMoveLevel2->setY(l);
-								bool isLevel2MoveValid = this->myBoard.checkMove(possibleMoveLevel2, oppSide);
-								if(isLevel2MoveValid)
+								boardClone.doMove(possibleMoveLevel2, oppSide);
+								int thisScore = boardClone.getScore(this->mySide);
+								if(worstScoreThisRound > thisScore)
 								{
-									boardClone.doMove(possibleMoveLevel2, oppSide);
-									int thisScore = boardClone.getScore(this->mySide);
-									if(worstScoreThisRound > thisScore)
-									{
-										worstScoreThisRound = thisScore;
-									}
-									// reset the board to not have the opponent move
-									boardClone = * this->myBoard.copy();
-									boardClone.doMove(& this->mostRecentMove, this->mySide);
+									worstScoreThisRound = thisScore;
 								}
+								// reset the board to not have the opponent move
+								boardClone = * this->myBoard.copy();
+								boardClone.doMove(& this->mostRecentMove, this->mySide);
 							}
 						}
+					}
+
+					if(worstScoreThisRound > highestWorstScoreLevel2)
+					{
 						highestWorstScoreLevel2 = worstScoreThisRound;
-						worstScoreThisRound= 64;
 						highestWorstScoreMoveLevel1->setX(i);
 						highestWorstScoreMoveLevel1->setY(j);
-					} 
-					else
-					{
-						Board boardClone = * this->myBoard.copy();
-						boardClone.doMove(& this->mostRecentMove, this->mySide);
-
-						//Go 1 layer deeper
-						for( int k = 0; k < 8; k++)
-						{
-							for (int l = 0; l <8; l++)
-							{
-								possibleMoveLevel2->setX(k);
-								possibleMoveLevel2->setY(l);
-								bool isLevel2MoveValid = this->myBoard.checkMove(possibleMoveLevel2, oppSide);
-								if(isLevel2MoveValid)
-								{
-									boardClone.doMove(possibleMoveLevel2, oppSide);
-									int thisScore = boardClone.getScore(this->mySide);
-									if(worstScoreThisRound > thisScore)
-									{
-										worstScoreThisRound = thisScore;
-									}
-									// reset the board to not have the opponent move
-									boardClone = * this->myBoard.copy();
-									boardClone.doMove(& this->mostRecentMove, this->mySide);
-								}
-							}
-						}
-
-						if(worstScoreThisRound > highestWorstScoreLevel2)
-						{
-							highestWorstScoreLevel2 = worstScoreThisRound;
-							highestWorstScoreMoveLevel1->setX(i);
-							highestWorstScoreMoveLevel1->setY(j);
-						}
-						worstScoreThisRound = 64;
 					}
+					worstScoreThisRound = 64;
 				}
+
 			}
 		}
 	}
