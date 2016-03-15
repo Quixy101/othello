@@ -43,3 +43,6 @@ int Board::getHeuristic(Side mySide)
 	}
 	return score;
 }
+
+
+Though this modified minimax is not the best, it will best constant time player very reliably.
