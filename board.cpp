@@ -1,4 +1,5 @@
 #include "board.h"
+#include <vector>
 
 /*
  * Make a standard 8x8 othello board and initialize it to the standard setup.
@@ -36,6 +37,47 @@ bool Board::get(Side side, int x, int y) {
     return occupied(x, y) && (black[x + 8*y] == (side == BLACK));
 }
 
+int Board::getCornerNumber(Side side) {
+	int num = 0;
+	if( get(side, 0, 0) ) {
+		num += 1;
+	}
+	if( get(side, 0, 7) ) {
+		num += 1;
+	}
+	if( get(side, 7, 0) ) {
+		num += 1;
+	}
+	if( get(side, 7, 7) ) {
+		num += 1;
+	}
+	return num;
+}
+
+int Board::getEdgeNumber(Side side) {
+	int num = 0;
+	for( int i = 0; i < 8; i++) 
+	{
+		if( get(side, 0, i) ) 
+		{
+			num += 1;
+		}
+		if( get(side, 7, i) ) 
+		{
+			num += 1;
+		}
+		if( get(side, i, 0) ) 
+		{
+			num += 1;
+		}
+		if( get(side, i, 7) ) 
+		{
+			num += 1;
+		}
+	}
+	return num;
+}
+
 void Board::set(Side side, int x, int y) {
     taken.set(x + 8*y);
     black.set(x + 8*y, side == BLACK);
@@ -65,6 +107,19 @@ bool Board::hasMoves(Side side) {
         }
     }
     return false;
+}
+
+std::vector<Move> Board::getMoves(Side side) {
+	std::vector<Move> theMoves;
+	for (int i = 0; i < 8; i++) {
+		for (int j = 0; j < 8; j++) {
+			Move move(i, j);
+           		if ( checkMove(&move, side) ){
+				theMoves.push_back(move);
+			}
+		}
+	}
+	return theMoves;
 }
 
 /*
@@ -153,14 +208,44 @@ int Board::count(Side side) {
  */
 int Board::getScore(Side mySide)
 {
+	int score = 0;
 	if (mySide == BLACK)
 	{
-		return ( countBlack() - countWhite() );
+		score = countBlack() - countWhite();
 	}
 	else
 	{
-		return ( countWhite() - countBlack() );
+		score = countWhite() - countBlack();
 	}
+	return score;
+}
+
+/*
+ * Returns the position score heuristic for the board
+ */
+int Board::getHeuristic(Side mySide)
+{
+	int score = 0;
+	if (mySide == BLACK)
+	{
+		score = countBlack() - countWhite();
+		score += getMoves(BLACK).size() - getMoves(WHITE).size();
+		score += 7 * getCornerNumber(BLACK) - 7 * getCornerNumber(WHITE);
+		score += 3 * getEdgeNumber(BLACK) - 3 * getEdgeNumber(WHITE);
+	}
+	else
+	{
+		score = countWhite() - countBlack();
+		score += getMoves(WHITE).size() - getMoves(BLACK).size();
+		score += 7 * getCornerNumber(WHITE) - 7 * getCornerNumber(BLACK);
+		score += 3 * getEdgeNumber(WHITE) - 3 * getEdgeNumber(BLACK);
+	}
+	return score;
+}
+
+int Board::countEmpty() {
+	int count = 64 - countBlack() - countWhite();
+	return count;
 }
 
 /*

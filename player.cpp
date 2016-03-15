@@ -1,4 +1,5 @@
 #include "player.h"
+#include <vector>
 
 // Sierra Lincoln othello project - no partner.
 // currently this is an attempt at minimax
@@ -55,8 +56,13 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 	Move * highestWorstScoreMoveLevel1 = new Move(0,0);
 	Move * possibleMoveLevel2 = new Move(0,0);
 	bool moveFound = false;
-	int highestWorstScoreLevel2 = -64;
-	int worstScoreThisRound = 64;
+	int highestWorstScoreLevel2 = -999;
+	int worstScoreThisRound = 999;
+	//std::cerr << "myBoard.getCornerNumber(BLACK) = " << myBoard.getCornerNumber(BLACK) << std::endl;
+	//std::cerr << "myBoard.getCornerNumber(WHITE) = " << myBoard.getCornerNumber(WHITE) << std::endl;
+	//std::cerr << "myBoard.getEdgeNumber(BLACK) = " << myBoard.getEdgeNumber(BLACK) << std::endl;
+	//std::cerr << "myBoard.getEdgeNumber(WHITE) = " << myBoard.getEdgeNumber(WHITE) << std::endl;
+	//std::cerr << std::endl;
 	if (isMovePossible)
 	{
 		for( int i = 0; i < 8; i++)
@@ -83,7 +89,16 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 							if(isLevel2MoveValid)
 							{
 								boardClone.doMove(possibleMoveLevel2, oppSide);
-								int thisScore = boardClone.getScore(this->mySide);
+								int thisScore;
+								//std::cerr << "myBoard.countEmpty = " << myBoard.countEmpty() << std::endl;
+								if( myBoard.countEmpty() < 10 )
+								{
+									thisScore = boardClone.getScore(this->mySide);
+								}
+								else
+								{
+									thisScore = boardClone.getHeuristic(this->mySide);
+								}
 								//std::cerr << "testing their move (" << k << ", " << l << ") which gives score: " << thisScore << std::endl;
 								if(worstScoreThisRound > thisScore)
 								{
@@ -102,7 +117,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 						highestWorstScoreMoveLevel1->setX(i);
 						highestWorstScoreMoveLevel1->setY(j);
 					}
-					worstScoreThisRound = 64;
+					worstScoreThisRound = 999;
 				}
 
 			}
@@ -120,7 +135,7 @@ Move *Player::doMove(Move *opponentsMove, int msLeft) {
 }
 
 /** NON-MINIMAX CODE
-bool isMovePossible = this->myBoard.hasMoves(this->mySide);
+bool isMovePossible = this->myBoard.hasMoves(this->mySide); 
 	Move * bestMove = new Move(0,0);
 	bool moveFound = false;
 	int bestScore = -64;
